@@ -1,27 +1,15 @@
 from flask import Flask, jsonify, render_template, request
 import pymysql
-import boto3
 
 app = Flask(__name__)
 
-# Fetch RDS endpoint once at startup
-def get_rds_endpoint(db_identifier, region="ap-south-1"):
-    client = boto3.client("rds", region_name=region)
-    response = client.describe_db_instances(DBInstanceIdentifier=db_identifier)
-    return response["DBInstances"][0]["Endpoint"]["Address"]
-
-# Replace with your actual DB instance identifier
-RDS_ENDPOINT = get_rds_endpoint("mydb", region="ap-south-1")
-
 def get_db_connection():
-    connection = pymysql.connect(
-        host=RDS_ENDPOINT,
-        user="dbuser",         # Replace with your RDS username
-        password="dbpassword", # Replace with your RDS password
-        db="devprojdb",        # Replace with your database name
-        charset="utf8mb4",
-        cursorclass=pymysql.cursors.DictCursor
-    )
+    connection = pymysql.connect(host='mydb.cylck8yh5jkc.eu-central-1.rds.amazonaws.com',  # Replace with your RDS endpoint
+                                 user='dbuser',      # Replace with your RDS username
+                                 password='dbpassword',  # Replace with your RDS password
+                                 db='devprojdb',   # Replace with your database name
+                                 charset='utf8mb4',
+                                 cursorclass=pymysql.cursors.DictCursor)
     return connection
 
 @app.route('/health')
